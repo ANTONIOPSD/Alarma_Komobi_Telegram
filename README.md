@@ -5,5 +5,5 @@ No creo que le añada más funcionalidades.
 
 Necesitas instalar las siguientes librerías:
 
-requests
+requests,
 pycognito
