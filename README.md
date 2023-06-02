@@ -7,3 +7,8 @@ Necesitas instalar las siguientes librerías:
 
 requests,
 pycognito
+
+
+Uso:
+
+Edita los campos necesarios y ejecuta el script, nada más.
