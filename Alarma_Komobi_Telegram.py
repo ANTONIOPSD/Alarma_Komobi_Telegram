@@ -12,17 +12,13 @@ token_bot = "0000000000:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" # token del bot de 
 
 # Usuario y dispositivo Komobi
 usuario_komobi = "micorreo@ñññ.com" # correo de tu cuenta Komobi (el que usas en la app)
-contrasena_komobi = "micontraseña" # Contraseña de tu cuenta Komobi
+contrasena_komobi = "micontraseña" # Contraseña de tu cuenta Komobi (la que usas en la app)
 id_dispositivo_komobi = "860000000000000" # ID del kit de Komobi, en la APP -> Ajustes -> Configurar Dispotitivo -> Dispositivos emparejados
 #########################################################################
 
 os.chdir(os.path.dirname(__file__))
-so = os.name
 
-if so == "nt":
-    limpiar = "cls"
-else:
-    limpiar = "clear"
+limpiar = "cls" if os.name == "nt" else "clear"
 
 ruta_archivo_token = "ultimo_token.txt"
 
@@ -35,7 +31,7 @@ def enviar_mensaje(chat_id, mensaje):
         }
         get(url, params=parametros, timeout=10)
     except:
-        os.system(f"{limpiar}")
+        os.system(limpiar)
         print("Error al enviar el mensaje de Telegram, reiniciando...")
         time.sleep(5)
         main()
@@ -46,6 +42,7 @@ def obtener_token():
     try:
         usuario.authenticate(password=contrasena_komobi)
     except:
+        os.system(limpiar)
         print("Error al obtener el token de acceso, reiniciando...")
         time.sleep(5)
         main()
@@ -69,7 +66,7 @@ def comprobar_alarma(token, inicio):
         respuesta = get(url, headers=headers, timeout=10)
         respuesta_json = respuesta.json()
     except:
-        os.system(f"{limpiar}")
+        os.system(limpiar)
         print("Error al conectar con el servidor de datos de Komobi, reiniciando...")
         time.sleep(5)
         main()
@@ -78,14 +75,13 @@ def comprobar_alarma(token, inicio):
         token = obtener_token()
         with open(ruta_archivo_token, "w") as archivo_token:
             archivo_token.write(token)
-        os.system(f"{limpiar}")
+        os.system(limpiar)
         print("El token de acceso ha expirado, obteniendo uno nuevo...")
         time.sleep(1)
         main()
 
     if '"errorCode":"202"' in respuesta.text:
-        token = obtener_token()
-        os.system(f"{limpiar}")
+        os.system(limpiar)
         print("ID de dispositivo no existe o no está vinculado a la cuenta usada")
         time.sleep(5)
         main()
@@ -101,10 +97,10 @@ def comprobar_alarma(token, inicio):
 
         if alarma_actual != ultima_alarma and estado_alarma:
             ahora = time.time()
-            fecha_hora_actual = time.strftime('%d/%m/%Y %H:%M:%S', time.localtime(ahora))
-            os.system(f"{limpiar}")
-            print("Alarma detectada", fecha_hora_actual)
-            mensaje = f"Alarma detectada\nFecha de detección: {fecha_hora_actual}"
+            fecha_hora_alarma = time.strftime('%d/%m/%Y %H:%M:%S', time.localtime(alarma_actual))
+            os.system(limpiar)
+            print("Alarma detectada", fecha_hora_alarma)
+            mensaje = f"Alarma detectada\nFecha de detección original: {fecha_hora_alarma}"
             enviar_mensaje(chat_id=chat, mensaje=mensaje)
             ultima_alarma = alarma_actual
             time.sleep(5)
